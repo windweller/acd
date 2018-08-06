@@ -21,18 +21,19 @@ def gen_tiles(text, fill=-1,
 
 
 # return tile representing component
-def gen_tile_from_comp(text_orig, comp_tile, method, fill=0):
+def gen_tile_from_comp(text_orig, comp_tile, method, fill=-1):
     if method == 'occlusion':
         tile_new = np.copy(text_orig).flatten()
         tile_new[comp_tile] = fill
     elif method == 'build_up' or method == 'cd':
         tile_new = np.zeros(text_orig.shape)
+        tile_new[:] = fill  # added this line
         tile_new[comp_tile] = text_orig[comp_tile]
     return tile_new
 
 
 # generate tiles around component
-def gen_tiles_around_baseline(text_orig, comp_tile, method='build_up', sweep_dim=1, fill=0):
+def gen_tiles_around_baseline(text_orig, comp_tile, method='build_up', sweep_dim=1, fill=-1):
     L = text_orig.shape[0]
     left = 0
     right = L - 1
@@ -50,6 +51,7 @@ def gen_tiles_around_baseline(text_orig, comp_tile, method='build_up', sweep_dim
             tile_new[x] = fill
         elif method == 'build_up' or method == 'cd':
             tile_new = np.zeros(text_orig.shape)
+            tile_new[:] = fill
             tile_new[comp_tile] = text_orig[comp_tile]
             tile_new[x] = text_orig[x]
         tiles.append(tile_new)
