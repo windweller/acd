@@ -14,6 +14,7 @@ def gen_tiles(text, fill=0,
             text_new[start:end] = fill
         elif method == 'build_up' or method == 'cd':
             text_new = np.zeros(L)
+            text_new[:] = fill  # we added this line...so fill can be seperate from OOV, which is also 0
             text_new[start:end] = text[start:end]
         texts[start] = np.copy(text_new)
     return texts
