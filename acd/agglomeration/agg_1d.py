@@ -44,7 +44,7 @@ def agglomerate(model, batch, percentile_include, method, sweep_dim,
     # get scores
     texts = tiling.gen_tiles(text_orig, method=method, sweep_dim=sweep_dim)
     texts = texts.transpose()
-    batch.text.data = torch.LongTensor(texts).cuda()
+    batch.text.data = torch.LongTensor(texts)
     scores = score_funcs.get_scores_1d(batch, model, method, label, only_one=False,
                         score_orig=score_orig, text_orig=text_orig, subtract=subtract)
 
@@ -78,7 +78,7 @@ def agglomerate(model, batch, percentile_include, method, sweep_dim,
             # predict for all tiles
             # format tiles into batch
             tiles_concat = np.hstack((comp_tile, np.squeeze(border_tiles[0]).transpose()))
-            batch.text.data = torch.LongTensor(tiles_concat).cuda()
+            batch.text.data = torch.LongTensor(tiles_concat)
 
             # get scores (comp tile at 0, others afterwards)
             scores_all = score_funcs.get_scores_1d(batch, model, method, label, only_one=False,

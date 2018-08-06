@@ -10,7 +10,7 @@ def get_model(snapshot_file, cpu=False):
         model = torch.load(snapshot_file, map_location=lambda storage, loc: storage)
         print('loaded onto cpu...')
         return model
-    
+
     try:  # load onto gpu
         model = torch.load(snapshot_file)
         print('loaded onto gpu...')
