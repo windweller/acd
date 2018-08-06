@@ -17,7 +17,7 @@ def propagate_tanh_two(a, b):
 
 # propagate convolutional or linear layer
 def propagate_conv_linear(relevant, irrelevant, module):
-    bias = module(Variable(torch.zeros(irrelevant.size()).cuda()))
+    bias = module(Variable(torch.zeros(irrelevant.size())))
     rel = module(relevant) - bias
     irrel = module(irrelevant) - bias
 
@@ -38,7 +38,7 @@ def propagate_relu(relevant, irrelevant, activation):
             activation.inplace = False
     except:
         pass
-    zeros = Variable(torch.zeros(relevant.size()).cuda())
+    zeros = Variable(torch.zeros(relevant.size()))
     rel_score = activation(relevant)
     irrel_score = activation(relevant + irrelevant) - activation(relevant)
     if swap_inplace:
@@ -133,7 +133,7 @@ def cd_text(batch, model, start, stop):
     # Index one = word vector (i) or hidden state (h), index two = gate
     W_ii, W_if, W_ig, W_io = np.split(weights['weight_ih_l0'], 4, 0)
     W_hi, W_hf, W_hg, W_ho = np.split(weights['weight_hh_l0'], 4, 0)
-    b_i, b_f, b_g, b_o = np.split(weights['bias_ih_l0'].cpu().numpy() + weights['bias_hh_l0'].cpu().numpy(), 4)
+    b_i, b_f, b_g, b_o = np.split(weights['bias_ih_l0'].numpy() + weights['bias_hh_l0'].numpy(), 4)
     word_vecs = model.embed(batch.text)[:, 0].data
     T = word_vecs.size(0)
     relevant = np.zeros((T, model.hidden_dim))

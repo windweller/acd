@@ -36,7 +36,7 @@ def threshold_scores(scores, percentile_include, absolute):
 def agglomerate(model, batch, percentile_include, method, sweep_dim,
                         text_orig, label, num_iters=5, subtract=True, absolute=True):
     # get original text and score
-    text_orig = batch.text.data.cpu().numpy()
+    text_orig = batch.text.data.numpy()
     text_deep = copy.deepcopy(batch.text)
     score_orig = score_funcs.get_scores_1d(batch, model, method, label, only_one=True,
                             score_orig=None, text_orig=text_orig, subtract=subtract)[0]
