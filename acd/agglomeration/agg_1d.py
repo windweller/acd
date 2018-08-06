@@ -42,7 +42,7 @@ def agglomerate(model, batch, percentile_include, method, sweep_dim,
                             score_orig=None, text_orig=text_orig, subtract=subtract)[0]
 
     # get scores
-    texts = tiling.gen_tiles(text_orig, method=method, sweep_dim=sweep_dim)
+    texts = tiling.gen_tiles(text_orig, method=method, sweep_dim=sweep_dim, fill=-1)
     texts = texts.transpose()
     batch.text.data = torch.LongTensor(texts).cuda()
     scores = score_funcs.get_scores_1d(batch, model, method, label, only_one=False,
