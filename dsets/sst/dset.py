@@ -4,8 +4,13 @@ from torchtext import data, datasets
 import random
 
 # load the model
-def get_model(snapshot_file):
+def get_model(snapshot_file, cpu=False):
     print('loading', snapshot_file)
+    if cpu:
+        model = torch.load(snapshot_file, map_location=lambda storage, loc: storage)
+        print('loaded onto cpu...')
+        return model
+    
     try:  # load onto gpu
         model = torch.load(snapshot_file)
         print('loaded onto gpu...')
