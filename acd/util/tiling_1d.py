@@ -3,7 +3,7 @@ import numpy as np
 
 # pytorch needs to return each input as a column
 # return batch_size x L tensor
-def gen_tiles(text, fill=0,
+def gen_tiles(text, fill=-1,
               method='occlusion', prev_text=None, sweep_dim=1):
     L = text.shape[0]
     texts = np.zeros((L - sweep_dim + 1, L), dtype=np.int)
