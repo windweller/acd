@@ -14,8 +14,10 @@ class LSTMSentiment(nn.Module):
         self.use_gpu = True  # config.use_gpu
         self.num_labels = 2
         self.embed = nn.Embedding(self.vocab_size, self.emb_dim)
-        self.lstm = nn.LSTM(input_size=self.emb_dim, hidden_size=self.hidden_dim)
-        self.hidden_to_label = nn.Linear(self.hidden_dim, self.num_labels)
+        self.lstm = nn.LSTM(input_size=self.emb_dim, hidden_size=self.hidden_dim,
+                            bidirectional=config.birnn)
+        d_out = self.hidden_dim if not config.birnn else self.hidden_dim * 2
+        self.hidden_to_label = nn.Linear(d_out, self.num_labels)
 
     def forward(self, batch):
         if self.use_gpu:
