@@ -15,11 +15,10 @@ sys.path.append('../visualization')
 sys.path.append('../acd/util')
 sys.path.append('../acd/scores')
 sys.path.append('../acd/agglomeration')
-import viz_1d as viz
-import tiling_1d as tiling
+# import tiling_1d as tiling
 import agg_1d as agg
-import cd
-import score_funcs
+# import cd
+# import score_funcs
 
 from utils import chomsky_normal_form
 
