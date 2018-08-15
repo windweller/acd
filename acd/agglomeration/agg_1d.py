@@ -31,13 +31,18 @@ def threshold_scores(scores, percentile_include, absolute):
     mask = scores >= thresh
     return mask
 
+def fast_agglomerate(model, batch, percentile_include, method, sweep_dim,
+                      label, num_words, num_iters=5, subtract=True, absolute=True):
+    text_orig = batch.text.data.numpy()
+    score_orig = score_funcs.fast_get_scores_1d(batch, model, method, label, only_one=True,
+                                                num_words=num_words,
+                                                text_orig=text_orig, subtract=subtract)[0]
 
 # agglomerative sweep - black out selected pixels from before and resweep over the entire image
 def agglomerate(model, batch, percentile_include, method, sweep_dim,
                         text_orig, label, num_iters=5, subtract=True, absolute=True):
     # get original text and score
     text_orig = batch.text.data.numpy()
-    text_deep = copy.deepcopy(batch.text)
     score_orig = score_funcs.get_scores_1d(batch, model, method, label, only_one=True,
                             score_orig=None, text_orig=text_orig, subtract=subtract)[0]
 

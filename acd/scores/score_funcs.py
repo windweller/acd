@@ -95,9 +95,11 @@ def ig_scores_1d(batch, model, inputs):
     #     print((logits[-1] - zero_pred) - ig_scores.sum())
     return scores.numpy()
 
+
 # return scores (higher is better)
 def get_scores_1d(batch, model, method, label, only_one, score_orig, text_orig, subtract=False):
     # calculate scores
+    # only_one: means the first time
     if method == 'cd':
         if only_one:
             num_words = batch.text.data.numpy().shape[0]
@@ -117,7 +119,29 @@ def get_scores_1d(batch, model, method, label, only_one, score_orig, text_orig, 
         return scores[:, label] - scores[:, int(1 - label)]
     else:
         return scores[:, label]
-    
+
+
+def fast_get_scores_1d(batch, model, method, label, only_one, text_orig, num_words, subtract=False):
+    # calculate scores
+    if method == 'cd':
+        if only_one:
+            # num_words = batch.text.data.numpy().shape[0]
+            scores = np.expand_dims(cd.cd_text(batch, model, start=0, stop=num_words), axis=0)
+        else:
+            starts, stops = tiles_to_cd(batch)
+            batch.text.data = torch.LongTensor(text_orig)
+            scores = np.array([cd.cd_text(batch, model, start=starts[i], stop=stops[i])
+                               for i in range(len(starts))])
+    else:
+        raise ValueError("method \"{}\" not implemented".format(method))
+
+    # get score for other class
+    if subtract:
+        return scores[:, label] - scores[:, int(1 - label)]
+    else:
+        return scores[:, label]
+
+
 # return scores (higher is better)
 def get_scores_2d(model, method, ims, im_torch=None, pred_ims=None, model_type='mnist'):
     scores = []
