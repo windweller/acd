@@ -51,7 +51,7 @@ model.embed.weight.data.copy_(torch.from_numpy(embed))
 # build a new model
 class Config(object):
     d_hidden = model.hidden_dim
-    n_embed = model.vocab_size
+    n_embed = model.vocab_size + 1
     d_embed = model.emb_dim
     d_out = model.num_out
     batch_size = model.batch_size
