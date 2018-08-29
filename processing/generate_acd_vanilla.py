@@ -62,6 +62,7 @@ if USE_RANDOM_MODEL_BASELINE:
     config = Config()
     new_model = LSTMSentiment(config)
     new_model.embed.weight.data.copy_(model.embed.weight.data)  # glove data
+    new_model.cpu()
     model = new_model  # completely random new model
 
 # [l, r], a = previous line, b = current line
