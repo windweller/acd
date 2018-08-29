@@ -22,6 +22,7 @@ import agg_1d as agg
 
 from utils import chomsky_normal_form
 
+USE_RANDOM_MODEL_BASELINE = True
 
 # form class to hold data
 class B:
@@ -39,6 +40,7 @@ snapshot_file = '../dsets/sst/results/best_snapshot_devacc_84_devloss_0.44133740
 model = dset.get_model(snapshot_file, cpu=True).eval()
 model.use_gpu = False
 
+# embedding is from GloVE, no need to change anything
 embed = model.embed.weight.data.numpy()
 unk_embed = np.reshape(embed[0], (1, len(embed[0])))
 embed = np.concatenate([embed, unk_embed], 0)
@@ -46,6 +48,21 @@ x, y = embed.shape
 model.embed = torch.nn.Embedding(x, y)
 model.embed.weight.data.copy_(torch.from_numpy(embed))
 
+# build a new model
+class Config(object):
+    d_hidden = model.d_hidden
+    n_embed = model.n_embed
+    d_embed = model.d_embed
+    d_out = model.num_out
+    batch_size = model.batch_size
+    birnn = False
+
+if USE_RANDOM_MODEL_BASELINE:
+    from model import LSTMSentiment
+    config = Config()
+    new_model = LSTMSentiment(config)
+    new_model.embed.weight.data.copy_(model.embed.weight.data)  # glove data
+    model = new_model  # completely random new model
 
 # [l, r], a = previous line, b = current line
 # children: [num_words]
@@ -322,15 +339,15 @@ if __name__ == '__main__':
     print(len(new_dev_sents))
     print(len(new_test_sents))
 
-    with open('../data/sst/acd_trees/train.txt', 'w') as f:
+    with open('../data/sst/acd_trees_512d_rand/train.txt', 'w') as f:
         for s in new_train_sents:
             f.write(s + '\n')
 
-    with open('../data/sst/acd_trees/dev.txt', 'w') as f:
+    with open('../data/sst/acd_trees_512d_rand/dev.txt', 'w') as f:
         for s in new_dev_sents:
             f.write(s + '\n')
 
-    with open('../data/sst/acd_trees/test.txt', 'w') as f:
+    with open('../data/sst/acd_trees_512d_rand/test.txt', 'w') as f:
         for s in new_test_sents:
             f.write(s + '\n')
 
